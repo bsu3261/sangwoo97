@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 	
+		"-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="memberDAO">
+	<select id="iu" resultType="com.itbank.dao.MemberVO" >
+		select * from member2 order by id
+	</select>
+	
+	<select id="memberByEmail" 
+			resultType="com.itbank.dao.MemberVO"
+			parameterType="String">
+		select * from member2 where email = #{email}
+	</select>
+	
+	<select id="memberSearch"
+			resultType="com.itbank.dao.MemberVO"
+			parameterType="hashmap">
+		select * from member2 
+		where 
+			${type} = #{word}
+<!-- 			'name' = '이지은' (X) -->
+<!-- 			name = '이지은' (O) -->
+		order by
+			id asc
+	</select>
+	<!-- 
+		1. 파라미터는 하나만 받으므로, map을 파라미터로 활용할 수 있다
+		2. hashmap을 지정하면 <input name="">이 key, 사용자 입력값이 value가 된다
+		3. ${ } 형식은 문자열을 '' 없이 그대로 매핑한다
+	 -->
+</mapper>
+
+
+
+
+
+
+

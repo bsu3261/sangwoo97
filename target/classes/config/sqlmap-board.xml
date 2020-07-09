@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 	
+		"-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="board">
+	<select id="selectAll" resultType="BoardVO" 
+			parameterType="com.itbank.dao.BoardParam">
+		select * from 
+			(select rownum as st, A.* from 
+				(select * from board1 
+					<if test="searchType != null and !searchWord.equals('')">
+						where ${searchType} like  '%' || #{searchWord} || '%'
+					</if>
+				order by num desc) 
+			A where rownum <![CDATA[ <= ]]> #{end}) 
+		where st <![CDATA[ >= ]]> #{start}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.itbank.dao.BoardParam">
+		select count(*) from board1
+		<if test="searchType != null and !searchWord.equals('')">
+			where ${searchType} like  '%' || #{searchWord} || '%'
+		</if>
+	</select>
+	
+	<select id="selectOne" resultType="BoardVO" parameterType="int">
+		select * from board1 where num = #{num}
+	</select>
+	
+	<insert id="insert" parameterType="com.itbank.dao.BoardVO">
+		insert into board1 
+			(title, writer, context, ipaddr)
+		values 
+			(#{title}, #{writer}, #{context}, #{ipaddr})
+	</insert>
+	
+	<insert id="insertReply" parameterType="com.itbank.dao.ReplyVO">
+		insert into reply 
+			(bnum, writer, context)
+		values 
+			(#{bnum}, #{writer}, #{context})
+	</insert>
+	
+	
+	<update id="plusViewCount" parameterType="int">
+		update board1 
+		set 
+			views=views + 1
+		where
+			num = #{num}
+	</update>
+	
+	<select id="replyList" parameterType="int"
+	resultType="com.itbank.dao.ReplyVO">
+	select * from reply where bnum=#{num}
+
+	</select>
+	
+	<delete id="delete" parameterType="int">
+	delete from board1 where num=#{num}
+	</delete>
+	
+	<delete id="deleteReply" parameterType="int">
+	delete from reply where bnum=#{num}
+	</delete>
+	
+	
+	
+	
+	
+</mapper>
